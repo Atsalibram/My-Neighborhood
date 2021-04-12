@@ -49,3 +49,33 @@ def search_businesses(request):
     else:
         message = "You haven't searched for any term"
         return render(request, 'search.html', {"message": message})
+
+def get_business(request, id):
+
+    try:
+        project = Business.objects.get(pk = id)
+        
+    except ObjectDoesNotExist:
+        raise Http404()
+    
+    
+    return render(request, "projects.html", {"project":project})
+  
+
+@login_required(login_url='/accounts/login/')
+def new_business(request):
+    current_user = request.user
+    profile = request.user.profile
+
+    if request.method == 'POST':
+        form = NewBusinessForm(request.POST, request.FILES)
+        if form.is_valid():
+            project = form.save(commit=False)
+            project.Admin = current_user
+            project.admin_profile = profile
+            project.save()
+        return redirect('index')
+
+    else:
+        form = NewBusinessForm()
+    return render(request, 'new-business.html', {"form": form})
