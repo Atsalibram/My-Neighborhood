@@ -38,3 +38,14 @@ def register(request):
     
     
 @login_required(login_url='/accounts/login/')
+def search_businesses(request):
+    if 'keyword' in request.GET and request.GET["keyword"]:
+        search_term = request.GET.get("keyword")
+        searched_projects = Business.search_business(search_term)
+        message = f"{search_term}"
+
+        return render(request, 'search.html', {"message":message,"businesses": searched_projects})
+
+    else:
+        message = "You haven't searched for any term"
+        return render(request, 'search.html', {"message": message})
