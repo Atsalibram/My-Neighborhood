@@ -79,3 +79,51 @@ def new_business(request):
     else:
         form = NewBusinessForm()
     return render(request, 'new-business.html', {"form": form})
+
+@login_required(login_url='/accounts/login/')
+def user_profiles(request):
+    current_user = request.user
+    profile = request.user.profile
+    
+    if request.method == 'POST':
+        form = ProfileUpdateForm(request.POST, request.FILES, instance=request.user.profile)
+        form2 = NewNeighborhoodForm(request.POST)
+        
+        if form2.is_valid():
+            neighborhood = form2.save(commit=False)
+            neighborhood.Admin = current_user
+            neighborhood.admin_profile = profile
+            neighborhood.save()
+            return redirect('profile')
+        
+        if form.is_valid():
+            profile = form.save(commit=False)
+            profile.save()
+            return redirect('profile')
+            
+    else:
+        form = ProfileUpdateForm()
+        form2 = NewNeighborhoodForm()
+
+    return render(request, 'registration/profile.html', {"form":form, "form2":form2})
+
+
+@login_required(login_url='/accounts/login/')
+def new_post(request):
+    current_user = request.user
+    profile = request.user.profile
+    neighborhood = request.user.profile.neighborhood
+
+    if request.method == 'POST':
+        form = NewPostForm(request.POST)
+        if form.is_valid():
+            post = form.save(commit=False)
+            post.Author = current_user
+            post.author_profile = profile
+            post.neighborhood = neighborhood
+            post.save()
+        return redirect('index')
+
+    else:
+        form = NewPostForm()
+    return render(request, 'new-post.html', {"form": form})
