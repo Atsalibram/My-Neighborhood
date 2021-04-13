@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.templatetags.static import static
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, render_to_response, HttpResponseRedirect
 from django.http import HttpResponse, Http404
 import datetime as dt
 from .models import *
@@ -9,7 +9,9 @@ from django.contrib.auth.decorators import login_required
 from .forms import *
 from django.contrib import messages
 
+
 # Create your views here.
+
 def index(request):
     date = dt.date.today()
     # business = Business.get_allbusiness()
@@ -58,6 +60,7 @@ def search_businesses(request):
         message = "You haven't searched for any term"
         return render(request, 'search.html', {"message": message})
 
+
 def get_business(request, id):
 
     try:
@@ -87,6 +90,7 @@ def new_business(request):
     else:
         form = NewBusinessForm()
     return render(request, 'new-business.html', {"form": form})
+
 
 @login_required(login_url='/accounts/login/')
 def user_profiles(request):
