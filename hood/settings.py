@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'tinymce',
     'django_countries',
     'bootstrap3',
-    'neighborhood'
+    'neighborhood',
 ]
 
 MIDDLEWARE = [
